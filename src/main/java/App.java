@@ -1,4 +1,9 @@
-import datacollector.BaseCollector;
+import com.recsys.datacollector.DataCollector;
+import com.recsys.datacollector.tadatacollector.PlaceCollector.PlaceCollectorImpl;
+import com.recsys.datacollector.tadatacollector.RestaurantCollector.IRestaurantCollector;
+import com.recsys.datacollector.tadatacollector.RestaurantCollector.RestaurantCollectorImpl;
+import constants.IUrls;
+import com.recsys.datacollector.tadatacollector.TripAdvisorDataCollector;
 
 import java.io.IOException;
 
@@ -8,7 +13,11 @@ import java.io.IOException;
 public class App {
 
     public static void main(String[] args) throws IOException {
-        BaseCollector collect = new BaseCollector() ;
-        collect.setReviews();
+        //DataCollector tripAdvisorData = new TripAdvisorDataCollector() ;
+        //tripAdvisorData.collectData(IUrls.TRIP_ADVISOR_ISTANBUL_URL);
+
+
+        DataCollector ta = new RestaurantCollectorImpl() ;
+        ta.collectData();
     }
 }

@@ -1,4 +1,4 @@
-package dataobjects;
+package dataobjects.datacollectordataobjects;
 
 /**
  * Created by alimert on 10.11.2016.
@@ -13,7 +13,9 @@ public class Review {
 
     private String reviewDate ;
 
-    private int rate ;
+    private double reviewRate ;
+
+    private String url ;
 
     public String getReviewId() {
         return reviewId;
@@ -47,11 +49,20 @@ public class Review {
         this.reviewDate = reviewDate;
     }
 
-    public int getRate() {
-        return rate;
+    public double getReviewRate() {
+        return reviewRate;
     }
 
-    public void setRate(int rate) {
-        this.rate = rate;
+    public void setReviewRate(double rate) {
+        this.reviewRate = rate;
     }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
 }
