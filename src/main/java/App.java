@@ -1,9 +1,6 @@
 import com.recsys.datacollector.DataCollector;
-import com.recsys.datacollector.tadatacollector.PlaceCollector.PlaceCollectorImpl;
-import com.recsys.datacollector.tadatacollector.RestaurantCollector.IRestaurantCollector;
+
 import com.recsys.datacollector.tadatacollector.RestaurantCollector.RestaurantCollectorImpl;
-import constants.IUrls;
-import com.recsys.datacollector.tadatacollector.TripAdvisorDataCollector;
 
 import java.io.IOException;
 
