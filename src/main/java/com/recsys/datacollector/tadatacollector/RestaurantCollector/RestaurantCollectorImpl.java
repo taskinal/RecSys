@@ -154,11 +154,6 @@ public class RestaurantCollectorImpl extends TripAdvisorDataCollector implements
     @Override
     public void collectData() {
 
-
-        Document x = connect("https://www.tripadvisor.com/Restaurants-g293974-oa900-Istanbul.html#EATERY_OVERVIEW_BOX");
-
-
-
         createMainCategories();
         for(RestaurantCategory category : restaurantCategories){
             insertRestaurantsIntoCategories(category);

@@ -1,10 +1,14 @@
 package com.recsys.configuration;
 
 import com.recsys.dao.implementations.TaPlaceDAOImpl;
+import com.recsys.dao.implementations.TaThingsToDoDAOImpl;
 import com.recsys.dao.interfaces.TaPlaceDAO;
+import com.recsys.dao.interfaces.TaThingsToDoDAO;
 import com.recsys.datacollector.DataCollector;
-import com.recsys.datacollector.tadatacollector.ITripAdvisorDataCollector;
+import com.recsys.datacollector.tadatacollector.PlaceCollector.IPlaceCollector;
 import com.recsys.datacollector.tadatacollector.PlaceCollector.PlaceCollectorImpl;
+import com.recsys.datacollector.tadatacollector.RestaurantCollector.IRestaurantCollector;
+import com.recsys.datacollector.tadatacollector.RestaurantCollector.RestaurantCollectorImpl;
 import com.recsys.service.TaPlaceService;
 import com.recsys.service.TaPlaceServiceImpl;
 import org.hibernate.SessionFactory;
@@ -70,21 +74,46 @@ public class ApplicationContextConfig {
         return txManager;
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////
     @Bean(name = "placeDao")
     public TaPlaceDAO getPlaceDao() {
         return new TaPlaceDAOImpl();
     }
 
-
     @Bean(name="tripAdvisorPlaceCollector")
-    public DataCollector tripAdvisorPlaceCollector(){
+    public IPlaceCollector tripAdvisorPlaceCollector(){
         return new PlaceCollectorImpl();
     }
 
     @Bean(name="tripAdvisorPlaceService")
-    public TaPlaceService tripAdvisorPlaceService(){
-
-        return new TaPlaceServiceImpl() ;
+    @Autowired
+    public TaPlaceService tripAdvisorPlaceService(TaPlaceDAO taPlaceDAO){
+        return new TaPlaceServiceImpl(taPlaceDAO) ;
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////
+
+    @Bean(name="thingsToDoDao")
+    public TaThingsToDoDAO getThingsToDoDao() { return new TaThingsToDoDAOImpl();}
+
+
+
+
+
+
+
+
+
+
+
+
+    @Bean(name="tripAdvisorRestaurantCollector")
+    public IRestaurantCollector tripAdvisorRestaurantCollector(){
+        return new RestaurantCollectorImpl();
+    }
+
+
+
+
 
 }
