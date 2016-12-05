@@ -1,8 +1,8 @@
-package com.recsys.service;
+package com.recsys.service.Implementations;
 
 import com.recsys.dao.GenericDAO;
-import com.recsys.dao.interfaces.TaPlaceDAO;
 import com.recsys.entities.TaPlace;
+import com.recsys.service.Interfaces.TaPlaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,7 +16,8 @@ import org.springframework.stereotype.Service;
 @Configurable
 public class TaPlaceServiceImpl extends GenericServiceImpl<TaPlace, String> implements TaPlaceService {
 
-    private TaPlaceDAO taPlaceDao;
+
+    private GenericDAO taPlaceDao;
 
     public TaPlaceServiceImpl(){
 
@@ -25,7 +26,7 @@ public class TaPlaceServiceImpl extends GenericServiceImpl<TaPlace, String> impl
     @Autowired
     public TaPlaceServiceImpl(@Qualifier("taPlaceDaoImpl") GenericDAO<TaPlace, String> genericDao) {
         super(genericDao);
-        this.taPlaceDao = (TaPlaceDAO) genericDao;
+        this.taPlaceDao = genericDao;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.recsys.service;
+package com.recsys.service.Interfaces;
 
 import java.util.List;
 

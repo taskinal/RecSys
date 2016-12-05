@@ -1,6 +1,7 @@
-package com.recsys.service;
+package com.recsys.service.Implementations;
 
 import com.recsys.dao.GenericDAO;
+import com.recsys.service.Interfaces.GenericService;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -61,9 +62,5 @@ public abstract class GenericServiceImpl<E,K> implements GenericService<E,K> {
     public void remove(E entity) {
         genericDao.remove(entity);
     }
-
-
-
-
 
 }

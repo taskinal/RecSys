@@ -1,11 +1,7 @@
 import com.recsys.configuration.ApplicationContextConfig;
-import com.recsys.dao.interfaces.TaPlaceDAO;
-import com.recsys.datacollector.DataCollector;
-
 import com.recsys.datacollector.tadatacollector.PlaceCollector.IPlaceCollector;
-import com.recsys.datacollector.tadatacollector.PlaceCollector.PlaceCollectorImpl;
-import com.recsys.datacollector.tadatacollector.RestaurantCollector.IRestaurantCollector;
-import com.recsys.entities.TaPlace;
+import com.recsys.service.Interfaces.GenericService;
+import com.recsys.service.Interfaces.TaRestaurantsService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
@@ -23,10 +19,10 @@ public class App {
 
         ApplicationContext context = new AnnotationConfigApplicationContext(ApplicationContextConfig.class);
         IPlaceCollector dataCollector = context.getBean(IPlaceCollector.class);
-        IRestaurantCollector restaurantCollector = context.getBean(IRestaurantCollector.class);
-        restaurantCollector.collectData();
-
-
+        //IRestaurantCollector restaurantCollector = context.getBean(IRestaurantCollector.class);
+        dataCollector.collectData();
+        //GenericService service = context.getBean(TaRestaurantsService.class);
+        int a =5 ;
 
     }
 }

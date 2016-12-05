@@ -6,7 +6,7 @@ import java.util.List;
  * Created by alimert on 4.12.2016.
  */
 public interface GenericDAO<E, K> {
-
+    
     void add(E entity) ;
 
     void saveOrUpdate(E entity) ;

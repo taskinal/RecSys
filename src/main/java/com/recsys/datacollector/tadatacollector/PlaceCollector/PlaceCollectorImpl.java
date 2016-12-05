@@ -3,14 +3,12 @@ package com.recsys.datacollector.tadatacollector.PlaceCollector;
 import com.recsys.datacollector.Constants;
 import com.recsys.datacollector.tadatacollector.TripAdvisorDataCollector;
 import com.recsys.datacollector.tadatacollector.utils.TripAdvisorUtils;
-import com.recsys.entities.TaPlace;
-import com.recsys.service.TaPlaceService;
+import com.recsys.service.Interfaces.TaPlaceService;
 import dataobjects.datacollectordataobjects.Review;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +25,7 @@ public class PlaceCollectorImpl extends TripAdvisorDataCollector implements IPla
     private TripAdvisorUtils util = getUtil();
 
     private Map placeMap = getPlaceMap();
+
 
     @Autowired
     TaPlaceService service ;

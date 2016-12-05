@@ -1,16 +1,16 @@
 package com.recsys.configuration;
 
-import com.recsys.dao.implementations.TaPlaceDAOImpl;
-import com.recsys.dao.implementations.TaThingsToDoDAOImpl;
-import com.recsys.dao.interfaces.TaPlaceDAO;
-import com.recsys.dao.interfaces.TaThingsToDoDAO;
-import com.recsys.datacollector.DataCollector;
+import com.recsys.dao.AbstractDAOImpl;
+import com.recsys.dao.GenericDAO;
+import com.recsys.dao.GenericDAOImpl;
 import com.recsys.datacollector.tadatacollector.PlaceCollector.IPlaceCollector;
 import com.recsys.datacollector.tadatacollector.PlaceCollector.PlaceCollectorImpl;
 import com.recsys.datacollector.tadatacollector.RestaurantCollector.IRestaurantCollector;
 import com.recsys.datacollector.tadatacollector.RestaurantCollector.RestaurantCollectorImpl;
-import com.recsys.service.TaPlaceService;
-import com.recsys.service.TaPlaceServiceImpl;
+import com.recsys.entities.TaRestaurants;
+import com.recsys.entities.TaThingsToDoCategory;
+import com.recsys.service.Implementations.*;
+import com.recsys.service.Interfaces.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -74,10 +74,9 @@ public class ApplicationContextConfig {
         return txManager;
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    @Bean(name = "placeDao")
-    public TaPlaceDAO getPlaceDao() {
-        return new TaPlaceDAOImpl();
+    @Bean(name="tripAdvisorGenericBean")
+    public GenericDAO getGenericDao(){
+        return new GenericDAOImpl() ;
     }
 
     @Bean(name="tripAdvisorPlaceCollector")
@@ -85,34 +84,52 @@ public class ApplicationContextConfig {
         return new PlaceCollectorImpl();
     }
 
-    @Bean(name="tripAdvisorPlaceService")
-    @Autowired
-    public TaPlaceService tripAdvisorPlaceService(TaPlaceDAO taPlaceDAO){
-        return new TaPlaceServiceImpl(taPlaceDAO) ;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////
-
-    @Bean(name="thingsToDoDao")
-    public TaThingsToDoDAO getThingsToDoDao() { return new TaThingsToDoDAOImpl();}
-
-
-
-
-
-
-
-
-
-
-
-
     @Bean(name="tripAdvisorRestaurantCollector")
     public IRestaurantCollector tripAdvisorRestaurantCollector(){
         return new RestaurantCollectorImpl();
     }
 
+    @Bean(name="taRestaurantService")
+    @Autowired
+    public TaRestaurantsService taRestaurantsService(GenericDAO dao){
+        return new TaRestaurantsServiceImpl(dao);
+    }
 
+    @Bean(name="taPlaceService")
+    @Autowired
+    public TaPlaceService taPlaceService(GenericDAO dao){
+        return new TaPlaceServiceImpl(dao);
+    }
+
+    @Bean(name="taRestaurantCategoryService")
+    @Autowired
+    public TaRestaurantCategoryService taRestaurantCategoryService(GenericDAO dao){
+        return new TaRestaurantCategoryServiceImpl(dao);
+    }
+
+    @Bean(name="taReviewsService")
+    @Autowired
+    public TaReviewsService taReviewsService(GenericDAO dao){
+        return new TaReviewsServiceImpl(dao);
+    }
+
+    @Bean(name="taThingsToDoCategoryService")
+    @Autowired
+    public TaThingsToDoCategoryService taThingsToDoCategoryService(GenericDAO dao){
+        return new TaThingsToDoCategoryServiceImpl(dao);
+    }
+
+    @Bean(name="taThingsToDoService")
+    @Autowired
+    public TaThingsToDoService taThingsToDoService(GenericDAO dao){
+        return new TaThingsToDoServiceImpl(dao);
+    }
+
+    @Bean(name="taThingsToDoSubCategoryService")
+    @Autowired
+    public TaThingsToDoSubCategoryService taThingsToDoSubCategoryService(GenericDAO dao){
+        return new TaThingsToDoSubCategoryServiceImpl(dao);
+    }
 
 
 

@@ -1,4 +1,4 @@
-package com.recsys.service;
+package com.recsys.service.Interfaces;
 
 import com.recsys.entities.TaPlace;
 
