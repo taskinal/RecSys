@@ -1,5 +1,7 @@
 package com.recsys.service.Interfaces;
 
+import com.recsys.dao.GenericDAO;
+
 import java.util.List;
 
 /**
@@ -18,5 +20,11 @@ public interface GenericService<E,K> {
     void update(E entity);
 
     void remove(E entity);
+
+    void flush();
+
+    void clear() ;
+
+    E getItemByAttr(String attrName, K attrValue) ;
 
 }

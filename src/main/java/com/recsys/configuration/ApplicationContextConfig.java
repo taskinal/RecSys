@@ -7,12 +7,14 @@ import com.recsys.datacollector.tadatacollector.PlaceCollector.IPlaceCollector;
 import com.recsys.datacollector.tadatacollector.PlaceCollector.PlaceCollectorImpl;
 import com.recsys.datacollector.tadatacollector.RestaurantCollector.IRestaurantCollector;
 import com.recsys.datacollector.tadatacollector.RestaurantCollector.RestaurantCollectorImpl;
+import com.recsys.entities.TaPlace;
 import com.recsys.entities.TaRestaurants;
 import com.recsys.entities.TaThingsToDoCategory;
 import com.recsys.service.Implementations.*;
 import com.recsys.service.Interfaces.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +34,7 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan({ "com.recsys.configuration" })
+@ComponentScan({ "com.recsys" })
 @PropertySource(value = { "classpath:application.properties" })
 public class ApplicationContextConfig {
 
@@ -63,6 +65,7 @@ public class ApplicationContextConfig {
         properties.put("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));
         properties.put("hibernate.show_sql", environment.getRequiredProperty("hibernate.show_sql"));
         properties.put("hibernate.format_sql", environment.getRequiredProperty("hibernate.format_sql"));
+        properties.put("hibernate.batch_size", environment.getRequiredProperty("hibernate.batch_size")) ;
         return properties;
     }
 
@@ -73,11 +76,12 @@ public class ApplicationContextConfig {
         txManager.setSessionFactory(s);
         return txManager;
     }
-
-    @Bean(name="tripAdvisorGenericBean")
-    public GenericDAO getGenericDao(){
+/*
+    @Bean(name="daoType")
+    public GenericDAO daoType(){
         return new GenericDAOImpl() ;
     }
+
 
     @Bean(name="tripAdvisorPlaceCollector")
     public IPlaceCollector tripAdvisorPlaceCollector(){
@@ -88,8 +92,9 @@ public class ApplicationContextConfig {
     public IRestaurantCollector tripAdvisorRestaurantCollector(){
         return new RestaurantCollectorImpl();
     }
-
-    @Bean(name="taRestaurantService")
+*/
+/*
+    @Bean(name="taRestaurantsService")
     @Autowired
     public TaRestaurantsService taRestaurantsService(GenericDAO dao){
         return new TaRestaurantsServiceImpl(dao);
@@ -100,6 +105,7 @@ public class ApplicationContextConfig {
     public TaPlaceService taPlaceService(GenericDAO dao){
         return new TaPlaceServiceImpl(dao);
     }
+
 
     @Bean(name="taRestaurantCategoryService")
     @Autowired
@@ -131,6 +137,13 @@ public class ApplicationContextConfig {
         return new TaThingsToDoSubCategoryServiceImpl(dao);
     }
 
+    @Bean(name="taUserService")
+    @Autowired
+    public TaUserService taUserService(GenericDAO dao){
+        return new TaUserServiceImpl(dao);
+    }
+
+*/
 
 
 }

@@ -28,6 +28,7 @@ public abstract class GenericServiceImpl<E,K> implements GenericService<E,K> {
 
     }
 
+
     @Transactional(propagation = Propagation.REQUIRED)
     public void saveOrUpdate(E entity) {
         genericDao.saveOrUpdate(entity);
@@ -62,5 +63,14 @@ public abstract class GenericServiceImpl<E,K> implements GenericService<E,K> {
     public void remove(E entity) {
         genericDao.remove(entity);
     }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void flush(){genericDao.flush();}
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void clear(){genericDao.clear();}
+
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+    public E getItemByAttr(String attrName, K attrValue){return genericDao.getItemByAttr(attrName,attrValue);}
 
 }

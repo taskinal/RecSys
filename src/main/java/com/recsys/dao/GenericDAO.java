@@ -23,6 +23,10 @@ public interface GenericDAO<E, K> {
 
     void clear() ;
 
+    E getItemByAttr(String attrName,K attrValue);
+
+    void setDaoType (Class <E> daoToSet) ;
+
 
 
 }

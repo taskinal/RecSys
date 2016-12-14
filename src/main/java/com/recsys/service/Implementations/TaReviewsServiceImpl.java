@@ -23,9 +23,11 @@ public class TaReviewsServiceImpl extends GenericServiceImpl<TaReviews, String> 
     }
 
     @Autowired
-    public TaReviewsServiceImpl(@Qualifier("taReviewsDaoImpl") GenericDAO<TaReviews, String> genericDao) {
+    //@Qualifier("taReviewsDaoImpl")
+    public TaReviewsServiceImpl( GenericDAO<TaReviews, String> genericDao) {
         super(genericDao);
         this.taReviewsDao = genericDao;
+        this.taReviewsDao.setDaoType(TaReviews.class);
     }
 
 }

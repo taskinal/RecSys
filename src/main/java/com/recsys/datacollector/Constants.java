@@ -5,7 +5,7 @@ package com.recsys.datacollector;
  */
 public interface Constants {
 
-    String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36";
+    String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36 e-mail : taskinal@itu.edu.tr";
     String REFERRER = "http://www.google.com" ;
     int TRIP_ADVISOR_REQUEST_TIMEOUT = 12000 ;
     String CATEGORY_TEMPLATE = "https://www.tripadvisor.com/Attractions-g293974-Activities-c%s-Istanbul.html";

@@ -24,9 +24,11 @@ public class TaRestaurantCategoryServiceImpl extends GenericServiceImpl<TaRestau
     }
 
     @Autowired
-    public TaRestaurantCategoryServiceImpl(@Qualifier("taRestaurantCategoryDaoImpl") GenericDAO<TaRestaurantCategory, String> genericDao) {
+    //@Qualifier("taRestaurantCategoryDaoImpl")
+    public TaRestaurantCategoryServiceImpl(GenericDAO<TaRestaurantCategory, String> genericDao) {
         super(genericDao);
         this.taRestaurantCategoryDao = genericDao;
+        this.taRestaurantCategoryDao.setDaoType(TaRestaurantCategory.class);
     }
 
 }

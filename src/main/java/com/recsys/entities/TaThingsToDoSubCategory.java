@@ -12,7 +12,7 @@ public class TaThingsToDoSubCategory {
 
     @Id
     @Column(name="id")
-    private int id ;
+    private String id ;
 
     @Column (name = "name")
     private String name ;
@@ -21,11 +21,11 @@ public class TaThingsToDoSubCategory {
     @JoinColumn(name="ttdId")
     private TaThingsToDoCategory ttdId ;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

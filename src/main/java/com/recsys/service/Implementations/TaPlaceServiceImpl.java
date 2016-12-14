@@ -17,16 +17,14 @@ import org.springframework.stereotype.Service;
 public class TaPlaceServiceImpl extends GenericServiceImpl<TaPlace, String> implements TaPlaceService {
 
 
-    private GenericDAO taPlaceDao;
-
-    public TaPlaceServiceImpl(){
-
-    }
+    private GenericDAO <TaPlace,String> taPlaceDao;
 
     @Autowired
-    public TaPlaceServiceImpl(@Qualifier("taPlaceDaoImpl") GenericDAO<TaPlace, String> genericDao) {
+      public TaPlaceServiceImpl(GenericDAO<TaPlace, String> genericDao){
         super(genericDao);
         this.taPlaceDao = genericDao;
-    }
+        this.taPlaceDao.setDaoType(TaPlace.class);
+
+      }
 
 }

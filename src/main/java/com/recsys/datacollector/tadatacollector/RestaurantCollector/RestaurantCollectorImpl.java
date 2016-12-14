@@ -3,10 +3,16 @@ package com.recsys.datacollector.tadatacollector.RestaurantCollector;
 import com.recsys.datacollector.tadatacollector.TripAdvisorDataCollector;
 
 import com.recsys.datacollector.tadatacollector.utils.TripAdvisorUtils;
+import com.recsys.entities.TaPlace;
+import com.recsys.service.Interfaces.TaPlaceService;
+import com.recsys.service.Interfaces.TaRestaurantCategoryService;
+import com.recsys.service.Interfaces.TaRestaurantsService;
+import com.recsys.service.Interfaces.TaUserService;
 import dataobjects.datacollectordataobjects.Review;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
@@ -18,6 +24,15 @@ public class RestaurantCollectorImpl extends TripAdvisorDataCollector implements
     private List<RestaurantCategory> restaurantCategories ;
 
     private static TripAdvisorUtils util = getUtil();
+
+    @Autowired
+    TaRestaurantCategoryService  taRestaurantCategoryService ;
+    @Autowired
+    TaRestaurantsService taRestaurantsService ;
+    @Autowired
+    TaUserService taUserService ;
+    @Autowired
+    TaPlaceService taPlaceService ;
 
     private final void createMainCategories(){
 
@@ -150,7 +165,6 @@ public class RestaurantCollectorImpl extends TripAdvisorDataCollector implements
 
 
     }
-
     @Override
     public void collectData() {
 
@@ -189,9 +203,12 @@ public class RestaurantCollectorImpl extends TripAdvisorDataCollector implements
 
     }
 
+    public void writeToDb(){
 
 
 
+
+    }
 
 
 

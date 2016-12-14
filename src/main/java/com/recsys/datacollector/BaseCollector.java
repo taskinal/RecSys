@@ -2,25 +2,26 @@ package com.recsys.datacollector;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.springframework.stereotype.Service;
+
 
 import java.io.IOException;
 
 /**
  * Created by alimert on 6.11.2016.
  */
-@Service
+
 public abstract class BaseCollector implements DataCollector{
 
     public Document connect(String url)  {
 
-        Document mainPage = null ;
+        Document mainPage = new Document("");
 
         try {
             mainPage = Jsoup.connect(url)
                     .userAgent(UserAgent())
                     .referrer(Refferer())
                     .timeout(RequestTimeout())
+                    .followRedirects(true)
                     .get() ;
         }
         catch (IOException e) {

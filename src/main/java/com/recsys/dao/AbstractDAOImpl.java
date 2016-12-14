@@ -1,8 +1,12 @@
 package com.recsys.dao;
 
+import com.recsys.entities.TaUser;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
@@ -14,22 +18,18 @@ import java.util.List;
  * Created by alimert on 4.12.2016.
  */
 
-public abstract class AbstractDAOImpl<E,K extends Serializable> {
+public abstract class AbstractDAOImpl<E,K extends Serializable> implements GenericDAO<E,K> {
 
     @Autowired
     private SessionFactory sessionFactory ;
 
-    protected Class<? extends E> daoType;
+    protected Class<E> daoType;
 
-/*
-    public AbstractDAOImpl() {
+    public void setDaoType (Class <E> daoToSet){
 
-        Type t = getClass().getGenericSuperclass();
-        ParameterizedType pt = (ParameterizedType) t;
-        daoType = (Class) pt.getActualTypeArguments()[0];
+        this.daoType = daoToSet;
 
     }
-*/
 
     protected Session currentSession() {
         return sessionFactory.getCurrentSession();
@@ -59,9 +59,16 @@ public abstract class AbstractDAOImpl<E,K extends Serializable> {
         return (E) currentSession().get(daoType, key);
     }
 
-
     public List<E> getAll() {
         return currentSession().createCriteria(daoType).list();
+    }
+
+    public E getItemByAttr(String attrName, K attrValue){
+
+        Criteria criteria = currentSession().createCriteria(daoType);
+        criteria.add(Restrictions.eq(attrName,attrValue));
+        return (E) criteria.uniqueResult();
+
     }
 
     public void flush(){

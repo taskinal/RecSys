@@ -23,9 +23,11 @@ public class TaThingsToDoCategoryServiceImpl extends GenericServiceImpl<TaThings
     }
 
     @Autowired
-    public TaThingsToDoCategoryServiceImpl(@Qualifier("taThingsToDoCategoryDaoImpl") GenericDAO<TaThingsToDoCategory, String> genericDao) {
+    //@Qualifier("taThingsToDoCategoryDaoImpl")
+    public TaThingsToDoCategoryServiceImpl(GenericDAO<TaThingsToDoCategory, String> genericDao) {
         super(genericDao);
         this.taThingsToDoCategoryDao = genericDao;
+        this.taThingsToDoCategoryDao.setDaoType(TaThingsToDoCategory.class);
     }
 
 }

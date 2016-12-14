@@ -46,9 +46,9 @@ public class TripAdvisorThingToDo extends TripAdvisorPlace {
     public void createReviewPageUrls(){
 
         int num = super.getNumOfEnglishReviews();
-        //max 5 sayfa crawling
+        //max 10 sayfa crawling
         pageUrlList = new LinkedList<String>();
-        int pageCovered = num > 50 ? 5 : num/10 ;
+        int pageCovered = num > 100 ? 10 : (num/10)+1 ;
 
         if(num%reviewNumOnPage() == 0){
             pageCovered = pageCovered-1;
@@ -60,7 +60,7 @@ public class TripAdvisorThingToDo extends TripAdvisorPlace {
             }
             else {
                 String str = this.getUrl();
-                str = new StringBuilder(str).insert(str.indexOf("Istanbul"), "or" + Integer.toString(i * 10) + "-").toString();
+                str = new StringBuilder(str).insert(str.indexOf("Reviews")+7, "-or" + Integer.toString(i * 10)).toString();
                 this.pageUrlList.add(str);
             }
         }

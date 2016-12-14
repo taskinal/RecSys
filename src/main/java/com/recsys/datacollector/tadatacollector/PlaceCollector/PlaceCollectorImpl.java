@@ -3,8 +3,10 @@ package com.recsys.datacollector.tadatacollector.PlaceCollector;
 import com.recsys.datacollector.Constants;
 import com.recsys.datacollector.tadatacollector.TripAdvisorDataCollector;
 import com.recsys.datacollector.tadatacollector.utils.TripAdvisorUtils;
-import com.recsys.service.Interfaces.TaPlaceService;
+import com.recsys.entities.*;
+import com.recsys.service.Interfaces.*;
 import dataobjects.datacollectordataobjects.Review;
+import org.hibernate.HibernateException;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -26,9 +28,18 @@ public class PlaceCollectorImpl extends TripAdvisorDataCollector implements IPla
 
     private Map placeMap = getPlaceMap();
 
-
     @Autowired
-    TaPlaceService service ;
+    TaThingsToDoCategoryService taThingsToDoCategoryService ;
+    @Autowired
+    TaThingsToDoService taThingsToDoService ;
+    @Autowired
+    TaThingsToDoSubCategoryService taThingsToDoSubCategoryService ;
+    @Autowired
+    TaReviewsService taReviewsService ;
+    @Autowired
+    TaPlaceService taPlaceService ;
+
+
 
     /*
     * Method takes attribute name in link map
@@ -72,8 +83,8 @@ public class PlaceCollectorImpl extends TripAdvisorDataCollector implements IPla
             if(subCategory.children().hasAttr("href")){
                 SubThingsToDoCategory subCtg = new SubThingsToDoCategory();
                 subCtg.setUrl(subCategory.children().attr("abs:href"));
-                subCtg.setName(subCategory.children().select("span.filter_name").html());
-                subCtg.setPlaceCount(util.getIntFromString(subCategory.children().select("span.filter_count").html()));
+                subCtg.setName(subCategory.children().select("span.filter_name").text());
+                subCtg.setPlaceCount(util.getIntFromString(subCategory.children().select("span.filter_count").text()));
                 subCtg.setId(util.getSubCategoryIdFromUrl(subCtg.getUrl()));
                 subCtg.createUrlList();//Sub ThingsToDoCategory sayfalarinda pagination var onlarin linki burda yaratiliyor.
                 subCategoryList.add(subCtg);
@@ -109,7 +120,7 @@ public class PlaceCollectorImpl extends TripAdvisorDataCollector implements IPla
                 if (!placeMap.containsKey(place.id())) {
                     TripAdvisorThingToDo plc = new TripAdvisorThingToDo();
                     plc.setId(util.getNumberFromString(place.id()));
-                    plc.setName(place.children().first().children().first().html());
+                    plc.setName(place.children().first().children().first().text());
                     plc.setUrl(place.children().first().children().first().absUrl("abs:href"));
 
                     //If blogu place hakkinda yorum olup olmadigini kontrol ediyor.
@@ -119,9 +130,9 @@ public class PlaceCollectorImpl extends TripAdvisorDataCollector implements IPla
                     }
                     else {
                         plc.setNumOfReviews(0);
-                        plc.setRating("0");
+                        plc.setRating("0 ");
                     }
-                    placeMap.put(plc.getId(),plc.getUrl());
+                    placeMap.put(place.id(),plc.getUrl());
                     placeList.add(plc);
                 }
             }
@@ -134,7 +145,6 @@ public class PlaceCollectorImpl extends TripAdvisorDataCollector implements IPla
         }
         subCategory.setPlaces(placeList);
     }
-
 
     /*
     *Review linklerini place lere setleyen method
@@ -152,8 +162,18 @@ public class PlaceCollectorImpl extends TripAdvisorDataCollector implements IPla
             List<String> reviewUrlList = new LinkedList<String>() ;
             Document placePage = connect(place.getUrl());
             Elements headingInfo = placePage.select("div.heading_details").first().children();
-            place.setNeighborhood(headingInfo.first().text());
-            place.setExtraCategories(headingInfo.get(1).text());
+
+            if (headingInfo.size() < 2) {
+                if (headingInfo.first().text().contains("Neighborhood")) {
+                    place.setNeighborhood(headingInfo.first().text());
+                } else {
+                    place.setExtraCategories(headingInfo.first().text());
+                }
+            } else {
+                place.setNeighborhood(headingInfo.first().text());
+                place.setExtraCategories(headingInfo.get(1).text());
+            }
+
             place.setNumOfEnglishReviews(util.numberOfReviewFromLanguage(placePage.select("div.col.language.extraWidth").select("label").text(), "English"));
             place.setRanking(util.getIntFromString(placePage.select("b.rank_text.wrap").text()));
 
@@ -162,7 +182,7 @@ public class PlaceCollectorImpl extends TripAdvisorDataCollector implements IPla
             }
 
             //Ingilizce yorum 5 den azsa ciddiye alma
-            if(place.getNumOfEnglishReviews()>5) {
+            if(place.getNumOfEnglishReviews()>0) {
                 place.createReviewPageUrls();
 
                 for(String placeUrl : place.getPageUrlList()) {
@@ -170,20 +190,21 @@ public class PlaceCollectorImpl extends TripAdvisorDataCollector implements IPla
                     if (!placeUrl.equals(place.getUrl())) {
                         placePage = connect(placeUrl) ;
                     }
+                    if (placePage != null) {
 
-                    Elements reviews = placePage.select("div.reviewSelector");
-                    //reviewUrlList = new LinkedList<String>();
-                    for (Element review : reviews) {
-                        if (!review.attr("id").equals("")) {
-                            String reviewUrl = review.select("a[href]").attr("abs:href");
-                            reviewUrlList.add(reviewUrl); //review url list e ekle
+                        Elements reviews = placePage.select("div.reviewSelector");
+                        //reviewUrlList = new LinkedList<String>();
+                        for (Element review : reviews) {
+                            if (!review.attr("id").equals("") && !review.select("a[href]").attr("abs:href").contains("Amex")) {
+                                String reviewUrl = review.select("a[href]").attr("abs:href");
+                                reviewUrlList.add(reviewUrl); //review url list e ekle
+                            }
                         }
-                    }
-                    try {
-                        Thread.sleep(10000);
-                    }
-                    catch (InterruptedException e) {
-                        e.printStackTrace();
+                        try {
+                            Thread.sleep(10000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -194,45 +215,116 @@ public class PlaceCollectorImpl extends TripAdvisorDataCollector implements IPla
     @Override
     public void collectData() {
 
+        int ttdscBatchCounter=0, plcBatchCounter = 0, rewBatchCounter = 0 ;
+        TaThingsToDoCategory ttdc = new TaThingsToDoCategory();
+        TaThingsToDoSubCategory ttdsc = new TaThingsToDoSubCategory();
+        TaPlace plc = new TaPlace();
+        TaThingsToDo ttd = new TaThingsToDo();
+        TaReviews rew = new TaReviews();
+
         createMainCategories();
 
         for (ThingsToDoCategory thingsToDoCategory : thingsToDoCategoryList) {
+
+            ttdc.setId(thingsToDoCategory.getId().trim());
+            ttdc.setName(thingsToDoCategory.getName());
+            taThingsToDoCategoryService.saveOrUpdate(ttdc);
+
             insertSubCategoriesIntoMain(thingsToDoCategory);
+
             for (SubThingsToDoCategory subCategory : thingsToDoCategory.getSubCategoryList()) {
+                ttdsc.setTtdId(ttdc);
+                ttdsc.setId(subCategory.getId().trim());
+                ttdsc.setName(subCategory.getName());
+                ttdscBatchCounter++;
+                if (ttdscBatchCounter % 50 == 0) {
+                    taThingsToDoSubCategoryService.flush();
+                    taThingsToDoSubCategoryService.clear();
+                }
+                taThingsToDoSubCategoryService.saveOrUpdate(ttdsc);
                 insertPlacesIntoSubCategory(subCategory);
+
                 for (TripAdvisorThingToDo place : subCategory.getPlaces()) {
                     insertReviewsIntoPlaces(place);
-                    List<Review> reviewList = new LinkedList<Review>();
-                    for (String url : place.getReviewLinksList()) {
 
-                        Document reviewPage = this.connect(url);
-                        Elements reviewBodyProperty = reviewPage.select("p[property=reviewBody]");
-                        Elements reviewItemInline = reviewPage.select("div.innerBubble").first().select("div.rating.reviewItemInline");
+                    plc.setId(place.getId().trim());
+                    plc.setName(place.getName());
+                    plc.setRating(util.ratingFromString(place.getRating()));
+                    plc.setRanking(place.getRanking());
+                    plc.setNeighborhood(place.getNeighborhood());
 
-                        Review review = new Review();
-                        review.setReviewId(reviewBodyProperty.attr("id"));
-                        review.setReviewText(reviewBodyProperty.text());
-                        review.setReviewTitle(reviewPage.select("div[property=name]").text());
-                        review.setReviewRate(util.ratingFromString(reviewItemInline.select("img").first().attr("alt")));
-                        review.setReviewDate(reviewItemInline.select("span.ratingDate").first().attr("content"));
-                        review.setUrl(url);
-                        reviewList.add(review);
+                    ttd.setExtraCategories(place.getExtraCategories());
+                    ttd.setSuggestedVisitingHour(place.getSuggestedVisitingHour());
+                    ttd.setTtdId(ttdsc);
+                    ttd.setPlaceId(plc);
 
-                        try {
-                            Thread.sleep(10000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                    plcBatchCounter++;
+                    if (plcBatchCounter % 50 == 0) {
+                        taPlaceService.flush();
+                        taPlaceService.clear();
+                        taThingsToDoService.flush();
+                        taThingsToDoService.clear();
                     }
-                    place.setReviews(reviewList);
+                    taPlaceService.saveOrUpdate(plc);
+                    taThingsToDoService.add(ttd);
+                    if (place.getReviewLinksList() != null) {
+                        List<Review> reviewList = new LinkedList<Review>();
+                        for (String url : place.getReviewLinksList()) {
+
+                            Document reviewPage = this.connect(url);
+                            if (reviewPage != null) {
+                                Elements reviewBodyProperty = reviewPage.select("p[property=reviewBody]");
+                                Elements reviewItemInline = reviewPage.select("div.innerBubble").first().select("div.rating.reviewItemInline");
+                                Review review = new Review();
+                                review.setReviewId(reviewBodyProperty.attr("id"));
+                                review.setReviewText(reviewBodyProperty.text());
+                                review.setReviewTitle(reviewPage.select("div[property=name]").text());
+                                review.setReviewRate(util.ratingFromString(reviewItemInline.select("img").first().attr("alt")));
+                                review.setReviewDate(reviewItemInline.select("span.ratingDate").first().attr("content"));
+                                review.setUrl(url);
+
+                                rew.setId(review.getReviewId().trim());
+                                rew.setPlaceId(plc);
+                                rew.setDate(review.getReviewDate());
+                                rew.setText(review.getReviewText().replaceAll("[^\\x00-\\x7F]", ""));
+                                rew.setTitle(review.getReviewTitle().replaceAll("[^\\x00-\\x7F]", ""));
+                                rew.setRate(review.getReviewRate());
+
+                                rewBatchCounter++;
+                                if (rewBatchCounter % 50 == 0) {
+                                    taReviewsService.flush();
+                                    taReviewsService.clear();
+                                }
+                                taReviewsService.saveOrUpdate(rew);
+                                reviewList.add(review);
+
+                                try {
+                                    Thread.sleep(10000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                        }
+                        place.setReviews(reviewList);
+                    }
 
                 }
+
             }
+
         }
     }
 
+
     private String CategoryTemplate(){
         return Constants.CATEGORY_TEMPLATE;
+    }
+    public void writeToDb() {
+
+        Document a = connect("https://www.tripadvisor.com/ShowUserReviews-g293974-d295194-r433534068-Galata_Tower-Istanbul.html#REVIEWS");
+        int c = 5;
+
     }
 
 }
